@@ -12,5 +12,8 @@
     "@playwright/test": "^1.61.1",
     "@types/node": "^26.1.1",
     "dotenv": "^17.4.2"
+  },
+  "dependencies": {
+    "deepeval": "^0.1.31"
   }
 }

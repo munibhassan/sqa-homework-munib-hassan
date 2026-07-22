@@ -25,19 +25,19 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     await handleCookieConsentAndLoadPills(page);
   });
 
-    test('Page loads and suggested topic pills are visible', async ({ page }) => {
+  test('Page loads and suggested topic pills are visible', async ({ page }) => {
     const pills = page.locator('button.group');
     await expect(pills.first()).toBeVisible({ timeout: 10000 });
-    
+
     const count = await pills.count();
     expect(count).toBeGreaterThan(0);
-    
+
     const topics: string[] = [];
     for (let i = 0; i < count; i++) {
       topics.push(await pills.nth(i).innerText());
     }
     console.log('Verified suggested topics:', topics);
-    
+
     expect(topics).toContain('What is Permission');
     expect(topics).toContain('Permission Wallet');
   });
@@ -45,26 +45,26 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
   test('Clicking a suggested topic produces a streamed agent response', async ({ page }) => {
     const pills = page.locator('button.group');
     await expect(pills.first()).toBeVisible({ timeout: 10000 });
-    
+
     // Select the first pill (usually "What is Permission")
     const targetPill = pills.first();
     const pillText = await targetPill.innerText();
     console.log(`Clicking pill: "${pillText}"`);
-    
+
     // Assert exactly 0 agent message bubbles are present before clicking
     const agentBubbles = page.locator('div.flex.justify-start');
     await expect(agentBubbles).toHaveCount(0);
-    
+
     // Click the pill
     await targetPill.click();
-    
+
     // Now there should be the first agent bubble for the response
     const responseBubble = agentBubbles.first();
-    
+
     // Wait for the response to stabilize using our dynamic utility
     const responseText = await waitForResponseStabilization(responseBubble, 25000);
     console.log(`Received stabilized response for pill: "${responseText}"`);
-    
+
     // Verify response quality using DeepEval / Structural assertions
     await assertAgentResponseQuality(pillText, responseText);
   });
@@ -77,26 +77,26 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     // Locate the ASK input textarea
     const textarea = page.locator('textarea[placeholder="ASK anything..."]');
     await expect(textarea).toBeVisible();
-    
+
     // Enter free-text question
     const question = 'What is the best way to earn ASK tokens?';
     await textarea.fill(question);
-    
+
     // Locate and click the send button (the button inside the input container)
     const sendButton = page.locator('div.flex.gap-2 button');
     await expect(sendButton).toBeEnabled();
     await sendButton.click();
-    
+
     // Verify the first agent bubble appears and streams the response
     const responseBubble = agentBubbles.first();
     const responseText = await waitForResponseStabilization(responseBubble, 25000);
     console.log(`Received stabilized response for text query: "${responseText}"`);
-    
+
     // Verify response quality using DeepEval / Structural assertions
     await assertAgentResponseQuality(question, responseText);
   });
 
-    test('Shift+Enter creates a new line instead of sending the message', async ({ page }) => {
+  test('Shift+Enter creates a new line instead of sending the message', async ({ page }) => {
     const agentBubbles = page.locator('div.flex.justify-start');
     await expect(agentBubbles).toHaveCount(0);
 
@@ -114,7 +114,7 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     await expect(agentBubbles).toHaveCount(0);
   });
 
-   test('Enter keypress submits the message', async ({ page }) => {
+  test('Enter keypress submits the message', async ({ page }) => {
     const agentBubbles = page.locator('div.flex.justify-start');
     await expect(agentBubbles).toHaveCount(0);
 
@@ -133,13 +133,13 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     await assertAgentResponseQuality('Hello', responseText);
   });
 
-   test('Mobile viewport layout responsiveness', async ({ page }) => {
+  test('Mobile viewport layout responsiveness', async ({ page }) => {
     const viewport = page.viewportSize();
     console.log(`Testing viewport: ${viewport?.width}x${viewport?.height}`);
-    
+
     const pills = page.locator('button.group');
     await expect(pills.first()).toBeVisible({ timeout: 10000 });
-    
+
     const textarea = page.locator('textarea[placeholder="ASK anything..."]');
     await expect(textarea).toBeVisible();
   });
@@ -148,7 +148,7 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     const signUpBtn = page.locator('button:has-text("Sign Up")').first();
     await expect(signUpBtn).toBeVisible();
     await signUpBtn.click();
-    
+
     await expect(page).toHaveURL(/.*(auth|signup|register).*/, { timeout: 10000 });
   });
 
@@ -156,7 +156,7 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     const loginBtn = page.locator('button:has-text("Log in")').first();
     await expect(loginBtn).toBeVisible();
     await loginBtn.click();
-    
+
     await expect(page).toHaveURL(/.*(auth|login|signin).*/, { timeout: 10000 });
   });
 });

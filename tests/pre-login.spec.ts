@@ -95,5 +95,23 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     // Verify response quality using DeepEval / Structural assertions
     await assertAgentResponseQuality(question, responseText);
   });
+
+    test('Shift+Enter creates a new line instead of sending the message', async ({ page }) => {
+    const agentBubbles = page.locator('div.flex.justify-start');
+    await expect(agentBubbles).toHaveCount(0);
+
+    const textarea = page.locator('textarea[placeholder="ASK anything..."]');
+    await expect(textarea).toBeVisible();
+
+    await textarea.focus();
+    await page.keyboard.type('Line 1');
+    await page.keyboard.press('Shift+Enter');
+    await page.keyboard.type('Line 2');
+
+    const val = await textarea.inputValue();
+    expect(val).toBe('Line 1\nLine 2');
+
+    await expect(agentBubbles).toHaveCount(0);
+  });
 });
 

@@ -113,5 +113,24 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
 
     await expect(agentBubbles).toHaveCount(0);
   });
+
+   test('Enter keypress submits the message', async ({ page }) => {
+    const agentBubbles = page.locator('div.flex.justify-start');
+    await expect(agentBubbles).toHaveCount(0);
+
+    const textarea = page.locator('textarea[placeholder="ASK anything..."]');
+    await expect(textarea).toBeVisible();
+
+    await textarea.focus();
+    await page.keyboard.type('Hello');
+    await page.keyboard.press('Enter');
+
+    const responseBubble = agentBubbles.first();
+    const responseText = await waitForResponseStabilization(responseBubble, 25000);
+    console.log(`Received stabilized response for Enter keypress: "${responseText}"`);
+
+    // Verify response quality using DeepEval / Structural assertions
+    await assertAgentResponseQuality('Hello', responseText);
+  });
 });
 

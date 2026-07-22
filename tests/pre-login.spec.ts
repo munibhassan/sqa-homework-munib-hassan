@@ -132,5 +132,32 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     // Verify response quality using DeepEval / Structural assertions
     await assertAgentResponseQuality('Hello', responseText);
   });
+
+   test('Mobile viewport layout responsiveness', async ({ page }) => {
+    const viewport = page.viewportSize();
+    console.log(`Testing viewport: ${viewport?.width}x${viewport?.height}`);
+    
+    const pills = page.locator('button.group');
+    await expect(pills.first()).toBeVisible({ timeout: 10000 });
+    
+    const textarea = page.locator('textarea[placeholder="ASK anything..."]');
+    await expect(textarea).toBeVisible();
+  });
+
+  test('Clicking Sign Up navigates to the registration page', async ({ page }) => {
+    const signUpBtn = page.locator('button:has-text("Sign Up")').first();
+    await expect(signUpBtn).toBeVisible();
+    await signUpBtn.click();
+    
+    await expect(page).toHaveURL(/.*(auth|signup|register).*/, { timeout: 10000 });
+  });
+
+  test('Clicking Log in navigates to the login page', async ({ page }) => {
+    const loginBtn = page.locator('button:has-text("Log in")').first();
+    await expect(loginBtn).toBeVisible();
+    await loginBtn.click();
+    
+    await expect(page).toHaveURL(/.*(auth|login|signin).*/, { timeout: 10000 });
+  });
 });
 

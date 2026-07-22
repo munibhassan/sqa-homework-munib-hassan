@@ -5,7 +5,7 @@ import { assertAgentResponseQuality } from '../utils/deepeval-helper';
 
 // Helper to dismiss the cookie consent banner and reload the page if cookies were not set
 async function handleCookieConsentAndLoadPills(page: Page) {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   const rejectBtn = page.locator('#onetrust-reject-all-handler');
   try {
     await rejectBtn.waitFor({ state: 'visible', timeout: 5000 });

@@ -15,6 +15,7 @@ npm install
 # (Optional) Configure environment keys for LLM evaluations (DeepEval fallbacks to structural checks if empty)
 # Create a .env file in the root directory:
 # OPENAI_API_KEY=your_openai_api_key_here
+# CONFIDENT_API_KEY=your_confident_api_key_here
 
 # Run the test suite on all browsers
 npx playwright test

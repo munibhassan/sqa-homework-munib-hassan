@@ -41,7 +41,7 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     expect(topics).toContain('What is Permission');
     expect(topics).toContain('Permission Wallet');
   });
-  
+
   test('Clicking a suggested topic produces a streamed agent response', async ({ page }) => {
     const pills = page.locator('button.group');
     await expect(pills.first()).toBeVisible({ timeout: 10000 });
@@ -67,6 +67,33 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     
     // Verify response quality using DeepEval / Structural assertions
     await assertAgentResponseQuality(pillText, responseText);
+  });
+
+  test('Submitting a free-text question via the ASK input produces a streamed agent response', async ({ page }) => {
+    // Assert 0 agent bubbles are visible initially
+    const agentBubbles = page.locator('div.flex.justify-start');
+    await expect(agentBubbles).toHaveCount(0);
+
+    // Locate the ASK input textarea
+    const textarea = page.locator('textarea[placeholder="ASK anything..."]');
+    await expect(textarea).toBeVisible();
+    
+    // Enter free-text question
+    const question = 'What is the best way to earn ASK tokens?';
+    await textarea.fill(question);
+    
+    // Locate and click the send button (the button inside the input container)
+    const sendButton = page.locator('div.flex.gap-2 button');
+    await expect(sendButton).toBeEnabled();
+    await sendButton.click();
+    
+    // Verify the first agent bubble appears and streams the response
+    const responseBubble = agentBubbles.first();
+    const responseText = await waitForResponseStabilization(responseBubble, 25000);
+    console.log(`Received stabilized response for text query: "${responseText}"`);
+    
+    // Verify response quality using DeepEval / Structural assertions
+    await assertAgentResponseQuality(question, responseText);
   });
 });
 

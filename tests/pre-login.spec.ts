@@ -1,6 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+import { waitForResponseStabilization } from '../utils/stabilization';
+import { assertAgentResponseQuality } from '../utils/deepeval-helper';
+
+
 // Helper to dismiss the cookie consent banner and reload the page if cookies were not set
-async function handleCookieConsentAndLoadPills(page) {
+async function handleCookieConsentAndLoadPills(page: Page) {
   await page.goto('/');
   const rejectBtn = page.locator('#onetrust-reject-all-handler');
   try {
@@ -20,4 +24,32 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
   test.beforeEach(async ({ page }) => {
     await handleCookieConsentAndLoadPills(page);
   });
+
+  test('Clicking a suggested topic produces a streamed agent response', async ({ page }) => {
+    const pills = page.locator('button.group');
+    await expect(pills.first()).toBeVisible({ timeout: 10000 });
+    
+    // Select the first pill (usually "What is Permission")
+    const targetPill = pills.first();
+    const pillText = await targetPill.innerText();
+    console.log(`Clicking pill: "${pillText}"`);
+    
+    // Assert exactly 0 agent message bubbles are present before clicking
+    const agentBubbles = page.locator('div.flex.justify-start');
+    await expect(agentBubbles).toHaveCount(0);
+    
+    // Click the pill
+    await targetPill.click();
+    
+    // Now there should be the first agent bubble for the response
+    const responseBubble = agentBubbles.first();
+    
+    // Wait for the response to stabilize using our dynamic utility
+    const responseText = await waitForResponseStabilization(responseBubble, 25000);
+    console.log(`Received stabilized response for pill: "${responseText}"`);
+    
+    // Verify response quality using DeepEval / Structural assertions
+    await assertAgentResponseQuality(pillText, responseText);
+  });
 });
+

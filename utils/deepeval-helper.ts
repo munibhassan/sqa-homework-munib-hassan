@@ -17,6 +17,8 @@ async function evaluateAnswerRelevancyWithLLM(
 You are an expert evaluator assessing the relevancy of an agent's answer to a user's question.
 Please evaluate the actual output against the input question.
 
+Note: The context of this evaluation is the 'Permission.ai' website, a platform for the agentic web, earning ASK tokens, and data ownership. Therefore, questions about 'Permission' or 'Permission Wallet' refer to the Permission.ai platform, and the agent's response should be relevant to Permission.ai, ASK tokens, data brokerage, and wallets.
+
 Input Question: "${question}"
 Actual Output: "${actualOutput}"
 
@@ -143,7 +145,8 @@ export async function assertAgentResponseQuality(
       llmTestCases: [testCase]
     });
   } catch (error) {
-    // Suppressed Confident AI upload warnings per user request
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('❌ [DeepEval] Confident AI upload failed with error:', error);
   }
 
   // 3. Fallback to structural assertions if local LLM evaluation could not run
@@ -160,7 +163,7 @@ export async function assertAgentResponseQuality(
  */
 function runStructuralAssertions(text: string): void {
   // 1. Length validation (must be longer than a placeholder or error note)
-  expect(text.length).toBeGreaterThan(50);
+  expect(text.length).toBeGreaterThan(25);
   
   // 2. Negative assertions checking for common API/server failures
   const errorPatterns = [

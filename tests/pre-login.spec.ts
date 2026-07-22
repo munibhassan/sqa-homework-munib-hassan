@@ -97,6 +97,10 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
   });
 
   test('Shift+Enter creates a new line instead of sending the message', async ({ page }) => {
+    // Wait for the topic pills to be visible to ensure hydration has completed
+    const pills = page.locator('button.group');
+    await expect(pills.first()).toBeVisible({ timeout: 10000 });
+
     const agentBubbles = page.locator('div.flex.justify-start');
     await expect(agentBubbles).toHaveCount(0);
 
@@ -115,6 +119,10 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
   });
 
   test('Enter keypress submits the message', async ({ page }) => {
+    // Wait for the topic pills to be visible to ensure hydration has completed
+    const pills = page.locator('button.group');
+    await expect(pills.first()).toBeVisible({ timeout: 10000 });
+
     const agentBubbles = page.locator('div.flex.justify-start');
     await expect(agentBubbles).toHaveCount(0);
 

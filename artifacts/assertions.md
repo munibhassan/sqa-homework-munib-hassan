@@ -7,7 +7,7 @@ We avoid hardcoded pauses. Instead, we poll the response container (`div.flex.ju
 
 ## What We Assert
 1. **Semantic Relevancy (LLM Evaluation):** If `OPENAI_API_KEY` is present, the prompt and response are piped into **DeepEval's `AnswerRelevancyMetric`** to compute semantic alignment, asserting a score `≥ 0.7`.
-2. **Structural Size (Fallback):** We assert the text length exceeds a minimum threshold (`> 50` characters) to verify the response isn't a blank bubble or a tiny crash fragment.
+2. **Structural Size (Fallback):** We assert the text length exceeds a minimum threshold (`> 25` characters) to verify the response isn't a blank bubble or a tiny crash fragment.
 3. **Contextual Token Presence:** We inspect the response for core contextual tokens (e.g., `"permission"`, `"ASK"`, `"wallet"`) relevant to the selected topic.
 4. **Server/API Sanitization:** We verify the text contains no operational error indicators (e.g., `"failed to fetch"`, `"rate limit"`, `"something went wrong"`).
 

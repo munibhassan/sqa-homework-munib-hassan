@@ -104,7 +104,7 @@ export async function assertAgentResponseQuality(
       '⚠️  [DeepEval] OPENAI_API_KEY is not defined in the environment. ' +
       'Skipping LLM evaluation and falling back to structural assertions.'
     );
-    runStructuralAssertions(actualOutput);
+    runStructuralAssertions(question, actualOutput);
     return;
   }
 
@@ -152,16 +152,16 @@ export async function assertAgentResponseQuality(
   // 3. Fallback to structural assertions if local LLM evaluation could not run
   if (!localLlmPassed) {
     console.log('🔄 Falling back to structural assertions...');
-    runStructuralAssertions(actualOutput);
+    runStructuralAssertions(question, actualOutput);
   } else {
-    runStructuralAssertions(actualOutput);
+    runStructuralAssertions(question, actualOutput);
   }
 }
 
 /**
  * Local fallback assertions verifying the output's structure, size, and validity.
  */
-function runStructuralAssertions(text: string): void {
+function runStructuralAssertions(question: string, text: string): void {
   // 1. Length validation (must be longer than a placeholder or error note)
   expect(text.length).toBeGreaterThan(25);
   
@@ -179,6 +179,24 @@ function runStructuralAssertions(text: string): void {
   for (const pattern of errorPatterns) {
     expect(textLower).not.toContain(pattern);
   }
+
+  // 3. Contextual Token Presence: Check for relevant tokens if the question relates to them
+  const questionLower = question.toLowerCase();
+  if (
+    questionLower.includes('permission') ||
+    questionLower.includes('ask') ||
+    questionLower.includes('wallet') ||
+    questionLower.includes('earn')
+  ) {
+    const hasCoreTokens =
+      textLower.includes('permission') ||
+      textLower.includes('ask') ||
+      textLower.includes('wallet') ||
+      textLower.includes('token') ||
+      textLower.includes('earn') ||
+      textLower.includes('data');
+    expect(hasCoreTokens).toBe(true);
+  }
   
-  console.log('✅ [Structural Assertions] Passed length and error-free criteria');
+  console.log('✅ [Structural Assertions] Passed length, error-free, and contextual criteria');
 }

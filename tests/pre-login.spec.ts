@@ -25,6 +25,23 @@ test.describe('Pre-Login Experience - Landing Page & Chat Interactions', () => {
     await handleCookieConsentAndLoadPills(page);
   });
 
+    test('Page loads and suggested topic pills are visible', async ({ page }) => {
+    const pills = page.locator('button.group');
+    await expect(pills.first()).toBeVisible({ timeout: 10000 });
+    
+    const count = await pills.count();
+    expect(count).toBeGreaterThan(0);
+    
+    const topics: string[] = [];
+    for (let i = 0; i < count; i++) {
+      topics.push(await pills.nth(i).innerText());
+    }
+    console.log('Verified suggested topics:', topics);
+    
+    expect(topics).toContain('What is Permission');
+    expect(topics).toContain('Permission Wallet');
+  });
+  
   test('Clicking a suggested topic produces a streamed agent response', async ({ page }) => {
     const pills = page.locator('button.group');
     await expect(pills.first()).toBeVisible({ timeout: 10000 });

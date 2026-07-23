@@ -58,14 +58,14 @@ An AI assistant cooperated in code generation and review. For details, see [ai-w
 
 ## Submission Checklist
 
-- [ ] Repo named `sqa-homework-munib-hassan` and default branch is `main`
-- [ ] README includes exact Setup + run commands
-- [ ] README word count ≤ 500 (excluding commands/checkboxes)
-- [ ] Max 8 tests; all 4 required behaviors covered
-- [ ] `artifacts/assertions.md` included (≤ 300 words)
-- [ ] `artifacts/ux-review.md` included (≤ 400 words)
-- [ ] `artifacts/data-checks.md` included (≤ 300 words + SQL)
-- [ ] `artifacts/ai-workflow.md` included (≤ 300 words)
-- [ ] `artifacts/report/` included
-- [ ] `artifacts/demo.mp4` included (narrated video, 60–90 seconds)
-- [ ] Commit history shows how the work evolved
+- [x] Repo named `sqa-homework-munib-hassan` and default branch is `main`
+- [x] README includes exact Setup + run commands
+- [x] README word count ≤ 500 (excluding commands/checkboxes)
+- [x] Max 8 tests; all 4 required behaviors covered
+- [x] `artifacts/assertions.md` included (≤ 300 words)
+- [x] `artifacts/ux-review.md` included (≤ 400 words)
+- [x] `artifacts/data-checks.md` included (≤ 300 words + SQL)
+- [x] `artifacts/ai-workflow.md` included (≤ 300 words)
+- [x] `artifacts/report/` included
+- [x] `artifacts/demo.mp4` included (narrated video, 60–90 seconds)
+- [x] Commit history shows how the work evolved
